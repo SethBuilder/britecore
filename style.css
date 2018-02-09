@@ -1,0 +1,95 @@
+.row {
+	position: relative;
+}
+
+html, body, #app, nav {
+	padding: 0;
+	margin: 0;
+}
+
+::-moz-selection { background: black;color:white; }
+::selection { background: black;color:white; }
+
+.brand-logo img {
+	width: 150px;
+}
+
+.brand-logo p {
+	display: inline;
+	font-size: 11px;
+	vertical-align: bottom;
+}
+
+body {
+	height: 90vh;
+	/*background-color: red;*/
+	/*background: url("https://source.unsplash.com/1920x1080/?happy,people") no-repeat center center fixed;*/
+	background: url("money.webp") repeat-y center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.lead-form {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  box-shadow: 0 0 .8pt .8pt grey;
+  margin-top: 30px;
+}
+
+.form-content {
+	width: 100%;
+	margin: auto;
+	padding: 20px;
+}
+
+
+
+	/* label color */
+   .input-field label {
+     color: black;
+   }
+   /* label focus color */
+   .input-field input[type=text]:focus + label {
+     color: black;
+   }
+
+
+   ::-webkit-input-placeholder {
+    color: rgba(0, 0, 0, 0.4);
+    opacity: 1 !important; /* for older chrome versions. may no longer apply. */
+    font-size: 14px;
+	}
+
+	:-moz-placeholder { /* Firefox 18- */
+	    color: rgba(0, 0, 0, 0.4);
+	    opacity: 1 !important;
+	    font-size: 14px;
+	}
+
+	::-moz-placeholder {  /* Firefox 19+ */
+	    color: rgba(0, 0, 0, 0.6);
+	    opacity: 1 !important;
+	    font-size: 14px;
+	}
+
+	:-ms-input-placeholder {  
+	   color: rgba(0, 0, 0, 0.6);
+	   font-size: 14px;
+	}
+
+	.row-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+
+	#type {
+		align-self: center;
+	}
+
+	[type="checkbox"]+label {
+		padding-left: 25px;
+	}
+
+	@media and (max-width: )
