@@ -7,8 +7,8 @@ html, body, #app, nav {
 	margin: 0;
 }
 
-::-moz-selection { background: black;color:white; }
-::selection { background: black;color:white; }
+::-moz-selection {     background-color: #cce2ff;color: rgba(0,0,0,.87); }
+::selection {     background-color: #cce2ff;color: rgba(0,0,0,.87); }
 
 .brand-logo img {
 	width: 150px;
@@ -92,4 +92,18 @@ body {
 		padding-left: 25px;
 	}
 
-	@media and (max-width: )
+	.numero {
+		font-size: 100px;
+		position: absolute;
+		left: 0;
+		top: 35%;
+	}
+
+	@media only screen and (max-width: 1300px) {
+		.row-grid {
+			grid-template-columns: 1fr;
+		}
+		.numero {
+			font-size: 70px;
+		}
+	}
