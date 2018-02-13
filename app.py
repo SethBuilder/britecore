@@ -34,7 +34,8 @@ def ceateTables(risks):
 	
 
 	# Connect to database
-	engine = create_engine("sqlite:///test.db", echo=True)
+	# engine = create_engine("sqlite:///test.db", echo=True)
+	engine = create_engine('mysql+mysqldb://root:123456@localhost/britecore')
 
 	# Create a metadata object for posted risks.
 	# MetaData() is a collection that we can add set of tables to and traverse them like an XML DOM
@@ -83,18 +84,18 @@ def getDataTypes(fields):
 			elif type_list[0] == 'date':
 				types.append(DateTime)
 
-		elif len(list(type_list)) == 2:
-			print(type_list)
+		elif len(type_list) == 2:
+			print("ccccccc"+type_list)
 			if all(x in types for x in ['text','number']):
-				types.append(Enum(String(50), Numeric()))
+				types.append(Enum('String(50)', 'Numeric()'))
 			elif all(x in types for x in ['text', 'date']):
-				types.append(Enum(String(50), DateTime))
+				types.append(Enum('String(50)', 'DateTime'))
 			else:
-				types.append(Enum(DateTime, Numeric()))
+				types.append(Enum('DateTime', 'Numeric()'))
 
 
 		else:
-			types.append(Enum(String(50), DateTime, Numeric()))
+			types.append(Enum('String(50)', 'DateTime', 'Numeric()'))
 
 
 	return types

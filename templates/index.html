@@ -5,6 +5,8 @@
       <meta name="author" content="Seif Elmughrabi">
       <!-- Compiled and minified CSS -->
       <link rel="stylesheet" href="(( url_for('static', filename='materialize.css') ))" media="screen, projection">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
+      <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"> -->
       <!--Google Icons-->
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link rel="stylesheet" href="(( url_for('static', filename='style.css') ))">
@@ -67,19 +69,35 @@
                   <label class="active" for="field">Field [[index+1]].[[field_index+1]]</label>
                 </div>
                 <div id="type"> 
-                <div class="input-field col s4">
-                  <input :id="'text' + '_' + index + '_' + field_index" type="checkbox" value="text" class="validate" v-model = "field_entry.type">
+                <div class="input-field col s3 hide-chips">
+                  <input :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type">
                   <label :for="'text' + '_' + index + '_' + field_index">Text</label>
                 </div>
-                <div class="input-field col s4">
-                  <input :id="'number' + '_' + index + '_' + field_index" type="checkbox" value="number" class="validate" v-model = "field_entry.type">
+                <div class="input-field col s3 hide-chips">
+                  <input :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type">
                   <label :for="'number' + '_' + index + '_' + field_index">Number</label>
                 </div>
-                <div class="input-field col s4">
-                  <input :id="'date' + '_' + index + '_' + field_index" type="checkbox" value="date" class="validate" v-model = "field_entry.type">
+                <div class="input-field col s3 hide-chips">
+                  <input :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type">
                   <label :for="'date' + '_' + index + '_' + field_index">Date</label>
                 </div>
+                <div class="input-field col s3">
+                  <input :id="'other' + '_' + index + '_' + field_index" type="radio" value="other" class="validate" @change="toggleChips()">
+                  <label :for="'other' + '_' + index + '_' + field_index">Other</label>
                 </div>
+                
+                </div>
+
+                <!-- <div style="display: none" id="chips" class="active chips chips-placeholder validate"></div> -->
+                <!-- <md-chips id="chips" v-model="errors" md-placeholder="Tag appropriate data types"></md-chips> -->
+                <div>
+                  <v-tag-input v-model="field_entry.type"></v-tag-input>
+                  <div v-for="ty in field_entry.type" class="chip">[[ty]]</div>
+                </div>
+                
+                
+                <!-- <div> {{tags}} </div> --> 
+
                 <div class="input-field">
                   <!-- <a @click="RemoveField(index)" class="btn-floating btn-small waves-effect waves-light red" title="Add New Field"><i class="material-icons">remove</i></a> -->
                   
@@ -118,7 +136,9 @@
 
 
       <!--Import Vue.js, axios (for API calls)-->
-      <script src="https://unpkg.com/vue@2.0.3/dist/vue.js"></script>
+      <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
+      <!-- <script src="https://unpkg.com/vue@2.5.13/dist/vue.min.js"></script> -->
+      <script src="https://unpkg.com/v-tag-input@0.0.3/dist/v-tag-input.js"></script>
       <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js" async></script>
 
       <!--Import jQuery before materialize.js-->
@@ -127,16 +147,17 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
       <script>
-        var app = new Vue({
-          el: '#app',
-          delimiters: ["[[", "]]"],
-          data: {
-            errors: [],
+      
+      var app = new Vue({
+        el: '#app',
+        delimiters: ["[[", "]]"],
+        data: {
+          errors: [],
             risks: [
               {
                 'risk_name': '', 'fields': [{'field': '', 'type': []}], 'errors':[]
               }
-            ]
+            ],
           },
           methods: {
             AddNewRisk () {
@@ -214,12 +235,17 @@
 
                     if (this.risks[i].fields[y].type.length==0) 
                       {
-                        this.risks[i].errors.push('At least one data type is required for record ' + risk_display_index + "." + field_display_index)
+                        this.risks[i].errors.push('Data type is required for record ' + risk_display_index + "." + field_display_index)
                           canSubmit = false
                       }
                   }
               }
               return canSubmit
+            },
+
+            toggleChips() {
+              
+              $('#chips').toggle()
             },
 
             Submit() {
@@ -231,9 +257,15 @@
 
               }
             }
-          }
+          },
         })
       </script>
 
+      <script>
+            $('.chips').material_chip();
+            $('.hide-chips').click(function(){
+            $('#chips').hide()
+        });
+      </script>
     </body>
   </html>
