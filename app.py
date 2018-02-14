@@ -11,7 +11,6 @@ import ast
 
 class CustomFlask(Flask):
 	""" This class is so that I can work with Flask and Vue templates together"""
-	
 	jinja_options = Flask.jinja_options.copy()
 	jinja_options.update(dict(
 	block_start_string='(%',
@@ -21,11 +20,6 @@ class CustomFlask(Flask):
 	comment_start_string='(#',
 	comment_end_string='#)',
 	))
-
-
-
-
-
 
 # Create Flask app
 app = CustomFlask(__name__)
@@ -50,36 +44,20 @@ def ceateTables(risks, metadata):
 	return "Hello"
 
 def getTables(metadata):
-	print("BEHOLD TABLE NAMES: "+str(metadata.sorted_tables))
-	# [
-	#{'table_name': 'Jim's car', 'fields': [{'field': 'Price', 'type': 'String'}]}
-	#]
 	tables = metadata.sorted_tables
-	table_names = [table.name for table in tables]
-	field_types = []
+	all_tables_info=[]
 	for table in tables:
-		field_names = [column.name for column in table.columns]
-		field_types_initial = [column.type for column in table.columns]
-		for field_type in field_types_initial:
-			if isinstance(field_type, ENUM):
-				field_type = ast.literal_eval(str(field_type)[4:].replace('(', '[').replace(')', ']'))
-				
-				field_types.append(field_type)
+		table_fields=[]
+		for column in table.columns:
+			
+			data_type = column.type
+			if isinstance(data_type, ENUM):
+				data_type=ast.literal_eval(str(data_type)[4:].replace('(', '[').replace(')', ']'))
 			else:
-				field_types.append(field_type)
-		
-	# fields = [(field_name, data_type) for field_name, data_type in zip(field_names, field_types) ]
-	print("XXX"+str(field_types))
-	# fields = [{k:v for k,v in fields}]
-	
-	print(str(table_names))
-
-	tables_and_their_fields = []
-
-	return 'Hi'
-
-def getFieldNamesFromDB(metadata):
-	pass
+				data_type = str(data_type)
+			table_fields.append({column.name: data_type})
+		all_tables_info.append({'table_name':table.name, 'fields':table_fields})
+	return jsonify(all_tables_info)
 
 
 def ceateTableRepresentation(risk, metadata):
@@ -94,7 +72,6 @@ def ceateTableRepresentation(risk, metadata):
 			for field_name, data_type in zip(field_names, data_types)
 			)
 		)
-
 
 def getFieldNames(fields):
 	return [field['field'] for field in fields]
