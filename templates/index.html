@@ -69,36 +69,36 @@
                   <label class="active" for="field">Field [[index+1]].[[field_index+1]]</label>
                 </div>
                 <div id="type"> 
-                <div class="input-field col s3 hide-chips">
-                  <input :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type">
+                <div class="input-field col s3">
+                  <input @click="HideChips()" :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type">
                   <label :for="'text' + '_' + index + '_' + field_index">Text</label>
                 </div>
-                <div class="input-field col s3 hide-chips">
-                  <input :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type">
+                <div class="input-field col s3">
+                  <input @click="HideChips()" :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type">
                   <label :for="'number' + '_' + index + '_' + field_index">Number</label>
                 </div>
-                <div class="input-field col s3 hide-chips">
-                  <input :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type">
+                <div class="input-field col s3">
+                  <input @click="HideChips()" :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type">
                   <label :for="'date' + '_' + index + '_' + field_index">Date</label>
                 </div>
                 <div class="input-field col s3">
-                  <input :id="'other' + '_' + index + '_' + field_index" type="radio" value="other" class="validate" @change="toggleChips()">
+                  <input @click="ToggleChips()" :id="'other' + '_' + index + '_' + field_index" type="radio" value="" class="validate" v-model = "field_entry.type">
                   <label :for="'other' + '_' + index + '_' + field_index">Other</label>
                 </div>
                 
                 </div>
-
-                <!-- <div style="display: none" id="chips" class="active chips chips-placeholder validate"></div> -->
-                <!-- <md-chips id="chips" v-model="errors" md-placeholder="Tag appropriate data types"></md-chips> -->
+                
                 <div>
-                  <v-tag-input v-model="field_entry.type"></v-tag-input>
-                  <div v-for="ty in field_entry.type" class="chip">[[ty]]</div>
+                  <v-tag-input class="hide-me" style="display:none" placeholder="Add space-separated data types. For ex: USD EUR GPB" v-model="field_entry.type">
+                  </v-tag-input>
+                  <div class="chip right">[[field_entry.type]]</div>
                 </div>
+              
                 
                 
                 <!-- <div> {{tags}} </div> --> 
 
-                <div class="input-field">
+                <div class="input-field col">
                   <!-- <a @click="RemoveField(index)" class="btn-floating btn-small waves-effect waves-light red" title="Add New Field"><i class="material-icons">remove</i></a> -->
                   
                   <a @click="RemoveField(index,field_index)" class="waves-effect waves-light btn red right" style="margin-top: 10px"><i class="material-icons left">remove</i>Remove Field</a>
@@ -185,6 +185,7 @@
 
             Reset() {
               this.errors = []
+              this.HideChips()
               this.risks = [
                 {
                   'risk_name': '', 'fields': [{'field': '', 'type': []}], 'errors':[]
@@ -242,30 +243,31 @@
               }
               return canSubmit
             },
-
-            toggleChips() {
-              
-              $('#chips').toggle()
-            },
-
             Submit() {
                if (this.checkValidity()) {
                 console.info(this.risks)
-                axios.post('risks', this.risks).then(function(response) {
-                  console.log(response)
+                axios.post('risks', this.risks)
+
+                .then(function(response) {
+                  axios.get('risks')
+                })
+
+                .catch(function(error) {
+                  alert('This Error occured: ' + error)
                 })
 
               }
+            },
+
+            ToggleChips() {
+              $('.hide-me').show()
+            },
+
+            HideChips() {
+              $('.hide-me').hide()
             }
           },
         })
-      </script>
-
-      <script>
-            $('.chips').material_chip();
-            $('.hide-chips').click(function(){
-            $('#chips').hide()
-        });
       </script>
     </body>
   </html>
