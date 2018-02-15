@@ -70,26 +70,26 @@
                 </div>
                 <div id="type"> 
                 <div class="input-field col s3">
-                  <input @click="HideChips()" :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type">
+                  <input @click="HideChips(index,field_index)" :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type" name="datatype">
                   <label :for="'text' + '_' + index + '_' + field_index">Text</label>
                 </div>
                 <div class="input-field col s3">
-                  <input @click="HideChips()" :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type">
+                  <input @click="HideChips(index,field_index)" :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type" name="datatype">
                   <label :for="'number' + '_' + index + '_' + field_index">Number</label>
                 </div>
                 <div class="input-field col s3">
-                  <input @click="HideChips()" :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type">
+                  <input @click="HideChips(index,field_index)" :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type" name="datatype">
                   <label :for="'date' + '_' + index + '_' + field_index">Date</label>
                 </div>
                 <div class="input-field col s3">
-                  <input @click="ToggleChips()" :id="'other' + '_' + index + '_' + field_index" type="radio" value="" class="validate" v-model = "field_entry.type">
+                  <input @click="ToggleChips(index,field_index)" :id="'other' + '_' + index + '_' + field_index" type="radio" class="validate" name="datatype">
                   <label :for="'other' + '_' + index + '_' + field_index">Other</label>
                 </div>
                 
                 </div>
                 
                 <div>
-                  <v-tag-input class="hide-me" style="display:none" placeholder="Add space-separated data types. For ex: USD EUR GPB" v-model="field_entry.type">
+                  <v-tag-input class="hide-me" :id='"hide_me_"+index+"_"+field_index' style="display:none" placeholder="Add space-separated data types. For ex: USD EUR GPB" v-model="field_entry.type">
                   </v-tag-input>
                   <div class="chip right">[[field_entry.type]]</div>
                 </div>
@@ -155,7 +155,7 @@
           errors: [],
             risks: [
               {
-                'risk_name': '', 'fields': [{'field': '', 'type': []}], 'errors':[]
+                'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
               }
             ],
           },
@@ -163,7 +163,7 @@
             AddNewRisk () {
               this.errors=[]
               this.risks.push({
-                risk_name: '', fields: [{'field': '', 'type': []}], 'errors':[]
+                risk_name: '', fields: [{'field': '', 'type': ''}], 'errors':[]
               })
             },
 
@@ -174,7 +174,7 @@
 
             AddNewField(index) {
               this.risks[index].fields.push(
-                {'field': '', 'type': []}
+                {'field': '', 'type': ''}
               )
             },
 
@@ -185,10 +185,10 @@
 
             Reset() {
               this.errors = []
-              this.HideChips()
+              $('.hide-me').hide()
               this.risks = [
                 {
-                  'risk_name': '', 'fields': [{'field': '', 'type': []}], 'errors':[]
+                  'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
                 }
               ]
             },
@@ -259,12 +259,14 @@
               }
             },
 
-            ToggleChips() {
-              $('.hide-me').show()
+            ToggleChips(index, field_index) {
+              this.risks[index].fields[field_index].type=''
+              $("#hide_me_"+index+"_"+field_index).show()
             },
 
-            HideChips() {
-              $('.hide-me').hide()
+            HideChips(index, field_index) {
+              // $('#other' + '_' + index + '_' + field_index).prop('checked', false);
+              $("#hide_me_"+index+"_"+field_index).hide()
             }
           },
         })
