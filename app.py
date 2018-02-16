@@ -55,18 +55,21 @@ def getTables(metadata):
 				data_type=ast.literal_eval(str(data_type)[4:].replace('(', '[').replace(')', ']'))
 			else:
 				data_type = str(data_type)
-			table_fields.append({column.name: data_type})
+			if column.name == 'id':
+				pass
+			else:
+				table_fields.append({'column_name': column.name, 'data_type': data_type})
 		all_tables_info.append({'table_name':table.name, 'fields':table_fields})
 	return jsonify(all_tables_info)
 
 
 def ceateTableRepresentation(risk, metadata):
 	table_name = risk['risk_name'].replace(' ', '-').lower()+"-table"
-	table_display_name = risk['risk_name'].capitalize()
+	table_display_name = risk['risk_name'].title()
 	field_names = getFieldNames(risk['fields'])
 	data_types = getDataTypes(risk['fields'])
 
-	table = Table(table_name, metadata,
+	table = Table(table_display_name, metadata,
 		Column('id', Integer, primary_key=True),
 		*(Column(field_name, data_type)
 			for field_name, data_type in zip(field_names, data_types)
@@ -74,7 +77,7 @@ def ceateTableRepresentation(risk, metadata):
 		)
 
 def getFieldNames(fields):
-	return [field['field'] for field in fields]
+	return [field['field'].title() for field in fields]
 
 def getDataTypes(fields):
 	data_types = []

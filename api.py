@@ -29,9 +29,18 @@ def postInsurancePolicySpecs():
 	return(ceateTables(request.json, app.metadata))
 
 @app.route('/risks', methods=['GET'])
+def getData():
+	logging.info('This goes to log file: '+str(request.json))
+	# data = getTables(app.metadata)
+	# return render_template('form.html', risks=data)
+	return(getTables(app.metadata))
+
+@app.route('/form', methods=['GET'])
 def getInsurancePolicyForm():
 	logging.info('This goes to log file: '+str(request.json))
-	return(getTables(app.metadata))
+	# data = getTables(app.metadata)
+	return render_template('form.html')
+	# return(getTables(app.metadata))
 
 if __name__ == '__main__:':
 	app.run(debug=True)

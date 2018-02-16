@@ -35,100 +35,48 @@
       <!--Start of Vue app-->
       <div id="app">
         <div class="container">
-          <h1 style="width: 90%;margin: auto;margin-top: 20px; text-align: center;">Plan Your Insurance Policy</h1>
-
-              <p v-if="errors.length" style="color: #ee6e73;background-color: white;">
-                <b>Please correct the following error(s):</b>
-                    <ul style="color: #ee6e73;background-color: white;">
-                         <li v-for="error in errors">  [[error]]  </li>
-                    </ul>
-              </p>
+          <h1 style="width: 90%;margin: auto;margin-top: 20px; text-align: center;">Fill Your Insurance Policy</h1>
 
           <div class="row" v-for="(risk, index) in risks">
-            <form class="col s10 offset-s1 lead-form" >
-
-              <p v-if="risk.errors.length" style="color: #ee6e73">
-                <b>Please correct the following error(s):</b>
-                    <ul style="color: #ee6e73">
-                         <li v-for="error in risk.errors">  [[error]]  </li>
-                    </ul>
-              </p>
-              
-              <span class="right" style="cursor: pointer;" @click="RemoveRisk(index)">X</span>
+            <form class="col s10 offset-s1 lead-form" >      
               <span class="left numero" style="">[[index+1]]</span>
               <div class="form-content" >
                 <div class="row">
-                  <div class="input-field col s6">
-                    <input required autocomplete="true" placeholder="House, car, vocal cords ...etc." id="risk_type" type="text" class="validate" v-model="risk.risk_name">
-                    <label class="active" for="risk_type"><span style="font-size: 20px;"><strong>Risk Type</strong></span></label>
-                  </div>
+                  <h3 v-html="risk.table_name"></h3>
                 </div>
               <div class="row row-grid" v-for="(field_entry, field_index) in risk.fields">
                 <div class="input-field">
-                  <input required placeholder="Price, Date of Birth ...etc." id="field" type="text" class="validate" v-model="field_entry.field">
-                  <label class="active" for="field">Field [[index+1]].[[field_index+1]]</label>
-                </div>
-                <div id="type"> 
-                <div class="input-field col s3">
-                  <input @click="HideChips(index,field_index)" :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'text' + '_' + index + '_' + field_index">Text</label>
-                </div>
-                <div class="input-field col s3">
-                  <input @click="HideChips(index,field_index)" :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'number' + '_' + index + '_' + field_index">Number</label>
-                </div>
-                <div class="input-field col s3">
-                  <input @click="HideChips(index,field_index)" :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'date' + '_' + index + '_' + field_index">Date</label>
-                </div>
-                <div class="input-field col s3">
-                  <input @click="ToggleChips(index,field_index)" :id="'other' + '_' + index + '_' + field_index" type="radio" class="validate" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'other' + '_' + index + '_' + field_index">Other</label>
-                </div>
-                
-                </div>
-                
-                <div>
-                  <v-tag-input class="hide-me" :id='"hide_me_"+index+"_"+field_index' style="display:none" placeholder="Add space-separated data types. For ex: USD EUR GPB" v-model="field_entry.type">
-                  </v-tag-input>
-                  <div class="chip right">[[field_entry.type]]</div>
-                </div>
-              
-                
-                
-                <!-- <div> {{tags}} </div> --> 
 
-                <div class="input-field col">
-                  <!-- <a @click="RemoveField(index)" class="btn-floating btn-small waves-effect waves-light red" title="Add New Field"><i class="material-icons">remove</i></a> -->
-                  
-                  <a @click="RemoveField(index,field_index)" class="waves-effect waves-light btn red right" style="margin-top: 10px"><i class="material-icons left">remove</i>Remove Field</a>
+                  <input v-if="field_entry.data_type === 'VARCHAR(50)'" required :placeholder="'Please type in: '+ field_entry.column_name" :id="'text' + '_' + index + '_' + field_index" type="text" class="validate">
 
-                </div>
-                  
-              </div>
+                  <label v-if="field_entry.data_type === 'VARCHAR(50)'" class="active" for="'text' + '_' + index + '_' + field_index">
+                    [[field_entry.column_name]]
+                  </label>
 
 
-              <div class="row">
-                <div class="col s12">
-                  <!-- <a @click="AddNewField(index)" class="btn-floating btn-large waves-effect waves-light green right" title="Add New Field"><i class="material-icons">add</i></a> -->
-                  <a @click="AddNewField(index)" class="waves-effect waves-light btn green right"><i class="material-icons left">add</i>Add Field</a>
-                </div>
 
+                  <input v-if="field_entry.data_type === 'NUMERIC'" required :placeholder="'Please type in: '+ field_entry.column_name + ' using the numbers keypad'" :id="'number' + '_' + index + '_' + field_index" type="number" class="validate">
+
+                  <label v-if="field_entry.data_type === 'NUMERIC'" class="active" for="'number' + '_' + index + '_' + field_index">
+                    [[field_entry.column_name]]
+                  </label>
+
+
+
+                  <input :list="'other' + '_' + index + '_' + field_index + '_list'" v-if="getType(field_entry.data_type)" required :placeholder="'Please select: '+ field_entry.column_name + ' from the list'" :id="'other' + '_' + index + '_' + field_index" class="validate">
+
+                  <datalist :id="'other' + '_' + index + '_' + field_index + '_list'">
+                    <option v-for="d in field_entry.data_type" :value="d">
+                  </datalist>
+
+                  <label v-if="getType(field_entry.data_type)===true" class="active" for="'other' + '_' + index + '_' + field_index">
+                    [[field_entry.column_name]]
+                  </label>
+
+                </div>                
               </div>
               </div>
             </form>
-          </div>
-          <div class="row">
-            <div class="col s10 offset-s1">
-              <div class="form-content">
-              <!-- <a @click="AddNewRisk" class="btn-floating btn-large waves-effect waves-light green right" title="Add New Risk"><i class="material-icons">add</i></a> -->
-              <a @click="AddNewRisk" class="waves-effect waves-light btn green right"><i class="material-icons left">add</i>Add Risk</a>
-              <a @click="Reset" style="margin-right: 5px;" class="waves-effect waves-light btn blue right"><i class="material-icons left">loop</i>Reset</a>
-              <br><br>
-              <button @click="Submit" class="btn btn-large waves-effect waves-light right green" type="submit" name="action">Submit!<i class="material-icons left">send</i>
-              </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -139,7 +87,7 @@
       <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
       <!-- <script src="https://unpkg.com/vue@2.5.13/dist/vue.min.js"></script> -->
       <script src="https://unpkg.com/v-tag-input@0.0.3/dist/v-tag-input.js"></script>
-      <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js" async></script>
+      <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
 
       <!--Import jQuery before materialize.js-->
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -153,13 +101,24 @@
         delimiters: ["[[", "]]"],
         data: {
           errors: [],
-            risks: [
-              {
-                'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
-              }
-            ],
+            risks: [],
           },
+
+          beforeMount: function() {
+          axios.get('risks')
+          .then(response => this.risks = response.data
+            )},
+
           methods: {
+            getType(field_entry) {
+              if (field_entry.constructor === Array) {
+               return true
+              }
+              else {
+                return false
+              }
+            },
+
             AddNewRisk () {
               this.errors=[]
               this.risks.push({
@@ -186,7 +145,6 @@
             Reset() {
               this.errors = []
               $('.hide-me').hide()
-              $('input:radio[name="datatype"]').prop('checked', false);
               this.risks = [
                 {
                   'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
@@ -250,8 +208,7 @@
                 axios.post('risks', this.risks)
 
                 .then(function(response) {
-                  // axios.get('risks')
-                  window.location.replace("form");
+                  axios.get('risks')
                 })
 
                 .catch(function(error) {
