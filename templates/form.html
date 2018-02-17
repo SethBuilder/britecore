@@ -1,75 +1,93 @@
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="author" content="Seif Elmughrabi">
-      <!-- Compiled and minified CSS -->
-      <link rel="stylesheet" href="(( url_for('static', filename='materialize.css') ))" media="screen, projection">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
-      <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"> -->
-      <!--Google Icons-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <link rel="stylesheet" href="(( url_for('static', filename='style.css') ))">
-      <!--Let browser know website is optimized for mobile-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-      <title>Your Insurance Policy Planner</title>
-    </head>
-
-    <body>
-      <!--Navigation Bar-->
-      <nav>
-        <div class="nav-wrapper">
-          <a href="#" class="brand-logo" title="BriteCore Technical Assignment | Seif Elmughrabi">
-            <img src="(( url_for('static', filename='download.webp') ))" alt="BriteCore Technical Assignment | Seif Elmughrabi">
-            <p>(Technical Assignment | Seif Elmughrabi)</p>
-          </a>
-
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="">Download ORM classes</a></li>
-          </ul>
-        </div>
-      </nav>
-      <!--End of Navigation Bar-->
+      (% extends "layout.html" %)
+      (% block content %)
 
       <!--Start of Vue app-->
       <div id="app">
         <div class="container">
           <h1 style="width: 90%;margin: auto;margin-top: 20px; text-align: center;">Fill Your Insurance Policy</h1>
 
+          <!-- Loops through risks that came from API-->
           <div class="row" v-for="(risk, index) in risks">
             <form class="col s10 offset-s1 lead-form" >      
               <span class="left numero" style="">[[index+1]]</span>
+
+              <!-- Table name-->
               <div class="form-content" >
                 <div class="row">
                   <h3 v-html="risk.table_name"></h3>
                 </div>
+
+              <!-- Loop though table's fields-->
               <div class="row row-grid" v-for="(field_entry, field_index) in risk.fields">
+
+                <!-- Show text field if data type is varchar-->
                 <div class="input-field">
+                  <input 
+                    v-if="field_entry.data_type === 'VARCHAR(50)'" 
+                    required 
+                    :placeholder="'Please type in: '+ field_entry.column_name" 
+                    :id="getIDOrName('text', index, field_index)" 
+                    type="text" 
+                    class="validate">
 
-                  <input v-if="field_entry.data_type === 'VARCHAR(50)'" required :placeholder="'Please type in: '+ field_entry.column_name" :id="'text' + '_' + index + '_' + field_index" type="text" class="validate">
-
-                  <label v-if="field_entry.data_type === 'VARCHAR(50)'" class="active" for="'text' + '_' + index + '_' + field_index">
+                  <label 
+                    v-if="field_entry.data_type === 'VARCHAR(50)'" 
+                    class="active" 
+                    :for="getIDOrName('text', index, field_index)">
                     [[field_entry.column_name]]
                   </label>
 
 
+                  <!-- Show numeric field if data type is numeric-->
+                  <input 
+                    v-if="field_entry.data_type === 'NUMERIC'" 
+                    required :placeholder="'Please type in: '+ field_entry.column_name + ' using the numbers keypad'" 
+                    :id="getIDOrName('number', index, field_index)" 
+                    type="number" 
+                    class="validate">
 
-                  <input v-if="field_entry.data_type === 'NUMERIC'" required :placeholder="'Please type in: '+ field_entry.column_name + ' using the numbers keypad'" :id="'number' + '_' + index + '_' + field_index" type="number" class="validate">
+                  <label 
+                    v-if="field_entry.data_type === 'NUMERIC'" 
+                    class="active" 
+                    :for="'number' + '_' + index + '_' + field_index">
+                    [[field_entry.column_name]]
+                  </label>
 
-                  <label v-if="field_entry.data_type === 'NUMERIC'" class="active" for="'number' + '_' + index + '_' + field_index">
+                  <!-- Show date picker field if data type is datetime-->
+                  <input 
+                    v-if="field_entry.data_type === 'DATETIME'" 
+                    required 
+                    placeholder="Please select date" 
+                    :id="getIDOrName('date', index, field_index)" 
+                    type="date" 
+                    class="validate datepicker">
+
+                  <label 
+                    v-if="field_entry.data_type === 'DATETIME'" 
+                    class="active" 
+                    :for="getIDOrName('date', index, field_index)">
                     [[field_entry.column_name]]
                   </label>
 
 
+                  <!-- Show datalist for when data type is enum-->
+                  <input 
+                    :list="'other' + '_' + index + '_' + field_index + '_list'" 
+                    v-if="getType(field_entry.data_type)" 
+                    required 
+                    :placeholder="'Please select: '+ field_entry.column_name + ' from the list'" 
+                    :id="getIDOrName('other', index, field_index)" 
+                    class="validate">
 
-                  <input :list="'other' + '_' + index + '_' + field_index + '_list'" v-if="getType(field_entry.data_type)" required :placeholder="'Please select: '+ field_entry.column_name + ' from the list'" :id="'other' + '_' + index + '_' + field_index" class="validate">
-
-                  <datalist :id="'other' + '_' + index + '_' + field_index + '_list'">
+                  <datalist 
+                    :id="'other' + '_' + index + '_' + field_index + '_list'">
                     <option v-for="d in field_entry.data_type" :value="d">
                   </datalist>
 
-                  <label v-if="getType(field_entry.data_type)===true" class="active" for="'other' + '_' + index + '_' + field_index">
+                  <label 
+                    v-if="getType(field_entry.data_type)===true" 
+                    class="active" 
+                    :for="getIDOrName('other', index, field_index)">
                     [[field_entry.column_name]]
                   </label>
 
@@ -81,154 +99,38 @@
         </div>
       </div>
       <!--End of Vue app-->
+      (% endblock %)
 
-
-      <!--Import Vue.js, axios (for API calls)-->
-      <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
-      <!-- <script src="https://unpkg.com/vue@2.5.13/dist/vue.min.js"></script> -->
-      <script src="https://unpkg.com/v-tag-input@0.0.3/dist/v-tag-input.js"></script>
-      <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
-
-      <!--Import jQuery before materialize.js-->
-      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-      <!-- Compiled and minified JavaScript -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-
+      (% block scripts %)
       <script>
-      
-      var app = new Vue({
-        el: '#app',
-        delimiters: ["[[", "]]"],
-        data: {
-          errors: [],
-            risks: [],
-          },
-
-          beforeMount: function() {
-          axios.get('risks')
-          .then(response => this.risks = response.data
-            )},
-
-          methods: {
-            getType(field_entry) {
-              if (field_entry.constructor === Array) {
-               return true
-              }
-              else {
-                return false
-              }
+        var app = new Vue({
+          el: '#app',
+          delimiters: ["[[", "]]"],
+          data: {
+              risks: [],
             },
 
-            AddNewRisk () {
-              this.errors=[]
-              this.risks.push({
-                risk_name: '', fields: [{'field': '', 'type': ''}], 'errors':[]
-              })
-            },
+            beforeMount: function() {
+            axios.get('risks')
+            .then(response => this.risks = response.data
+              )},
 
-            RemoveRisk(index) {
-              this.risks.splice(index,1)
-              // Vue.delete(this.risks, index);
-            },
+            methods: {
+              // Ensures HTML elements' ids and names are unique
+              getIDOrName(inputType, index, field_index) {
+                return inputType + '_' + index + '_' + field_index
+              },
 
-            AddNewField(index) {
-              this.risks[index].fields.push(
-                {'field': '', 'type': ''}
-              )
-            },
-
-            RemoveField(index,field_index) {
-              console.log(index, field_index)
-              this.risks[index].fields.splice(field_index, 1)
-            },
-
-            Reset() {
-              this.errors = []
-              $('.hide-me').hide()
-              this.risks = [
-                {
-                  'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
+              // For enum data type
+              getType(field_entry) {
+                if (field_entry.constructor === Array) {
+                 return true
                 }
-              ]
+                else {
+                  return false
+                }
+              },
             },
-
-            checkValidity() {
-
-              var canSubmit = true
-              this.errors=[]
-
-              if (this.risks.length==0) 
-                  {
-                    this.errors.push('At least one risk is required ')
-                    canSubmit = false
-                  }
-
-
-              for (var i =  this.risks.length - 1; i >= 0; i--) {
-                  // console.info(this.risks[i].risk_name)
-                  //Reset errors list
-                  this.risks[i].errors = []
-                  this.errors=[]
-
-                  //User friendly record number (starts from 1)
-                  var risk_display_index = i+1
-
-                  if (!this.risks[i].risk_name) 
-                  {
-                    this.risks[i].errors.push('Risk name required for record ' + risk_display_index)
-                    canSubmit = false
-                  }
-
-                  if (this.risks[i].fields.length==0) 
-                  {
-                    this.risks[i].errors.push('At least one field is required for record ' + risk_display_index)
-                    canSubmit = false
-                  }
-
-                  for (var y =  this.risks[i].fields.length - 1; y >= 0; y--) {
-                    var field_display_index = y+1
-                    if (!this.risks[i].fields[y].field) 
-                      {
-                        this.risks[i].errors.push('Field name required for record ' + risk_display_index + "." + field_display_index)
-                          canSubmit = false
-                      }
-
-                    if (this.risks[i].fields[y].type.length==0) 
-                      {
-                        this.risks[i].errors.push('Data type is required for record ' + risk_display_index + "." + field_display_index)
-                          canSubmit = false
-                      }
-                  }
-              }
-              return canSubmit
-            },
-            Submit() {
-               if (this.checkValidity()) {
-                console.info(this.risks)
-                axios.post('risks', this.risks)
-
-                .then(function(response) {
-                  axios.get('risks')
-                })
-
-                .catch(function(error) {
-                  alert('This Error occured: ' + error)
-                })
-
-              }
-            },
-
-            ToggleChips(index, field_index) {
-              this.risks[index].fields[field_index].type = ''
-              $("#hide_me_"+index+"_"+field_index).show()
-            },
-
-            HideChips(index, field_index) {
-              // $('#other' + '_' + index + '_' + field_index).prop('checked', false);
-              $("#hide_me_"+index+"_"+field_index).hide()
-            }
-          },
-        })
+          })
       </script>
-    </body>
-  </html>
+      (% endblock %)

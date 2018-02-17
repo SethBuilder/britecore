@@ -1,277 +1,315 @@
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="author" content="Seif Elmughrabi">
-      <!-- Compiled and minified CSS -->
-      <link rel="stylesheet" href="(( url_for('static', filename='materialize.css') ))" media="screen, projection">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
-      <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"> -->
-      <!--Google Icons-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <link rel="stylesheet" href="(( url_for('static', filename='style.css') ))">
-      <!--Let browser know website is optimized for mobile-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-      <title>Your Insurance Policy Planner</title>
-    </head>
-
-    <body>
-      <!--Navigation Bar-->
-      <nav>
-        <div class="nav-wrapper">
-          <a href="#" class="brand-logo" title="BriteCore Technical Assignment | Seif Elmughrabi">
-            <img src="(( url_for('static', filename='download.webp') ))" alt="BriteCore Technical Assignment | Seif Elmughrabi">
-            <p>(Technical Assignment | Seif Elmughrabi)</p>
-          </a>
-
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="">Download ORM classes</a></li>
-          </ul>
-        </div>
-      </nav>
-      <!--End of Navigation Bar-->
-
-      <!--Start of Vue app-->
-      <div id="app">
+  (% extends "layout.html" %)
+  (% block content %)
+    <!--Start of Vue app-->
+    <div id="app">
         <div class="container">
-          <h1 style="width: 90%;margin: auto;margin-top: 20px; text-align: center;">Plan Your Insurance Policy</h1>
+            <h1 style="width: 90%;margin: auto;margin-top: 20px; text-align: center;">
+              Plan Your Insurance Policy
+            </h1>
 
-              <p v-if="errors.length" style="color: #ee6e73;background-color: white;">
+            <!-- Validation errors when there's less than one risk-->
+            <p v-if="errors.length" style="color: #ee6e73;background-color: white;">
                 <b>Please correct the following error(s):</b>
-                    <ul style="color: #ee6e73;background-color: white;">
-                         <li v-for="error in errors">  [[error]]  </li>
-                    </ul>
-              </p>
+                <ul style="color: #ee6e73;background-color: white;">
+                    <li v-for="error in errors"> [[error]] </li>
+                </ul>
+            </p>
 
-          <div class="row" v-for="(risk, index) in risks">
-            <form class="col s10 offset-s1 lead-form" >
+            <!-- v-for statement to loop through all the forms users add. One form for each risk-->
+            <div class="row" v-for="(risk, index) in risks">
+                <form class="col s10 offset-s1 lead-form">
 
-              <p v-if="risk.errors.length" style="color: #ee6e73">
-                <b>Please correct the following error(s):</b>
-                    <ul style="color: #ee6e73">
-                         <li v-for="error in risk.errors">  [[error]]  </li>
-                    </ul>
-              </p>
-              
-              <span class="right" style="cursor: pointer;" @click="RemoveRisk(index)">X</span>
-              <span class="left numero" style="">[[index+1]]</span>
-              <div class="form-content" >
-                <div class="row">
-                  <div class="input-field col s6">
-                    <input required autocomplete="true" placeholder="House, car, vocal cords ...etc." id="risk_type" type="text" class="validate" v-model="risk.risk_name">
-                    <label class="active" for="risk_type"><span style="font-size: 20px;"><strong>Risk Type</strong></span></label>
-                  </div>
-                </div>
-              <div class="row row-grid" v-for="(field_entry, field_index) in risk.fields">
-                <div class="input-field">
-                  <input required placeholder="Price, Date of Birth ...etc." id="field" type="text" class="validate" v-model="field_entry.field">
-                  <label class="active" for="field">Field [[index+1]].[[field_index+1]]</label>
-                </div>
-                <div id="type"> 
-                <div class="input-field col s3">
-                  <input @click="HideChips(index,field_index)" :id="'text' + '_' + index + '_' + field_index" type="radio" value="text" class="validate" v-model = "field_entry.type" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'text' + '_' + index + '_' + field_index">Text</label>
-                </div>
-                <div class="input-field col s3">
-                  <input @click="HideChips(index,field_index)" :id="'number' + '_' + index + '_' + field_index" type="radio" value="number" class="validate" v-model = "field_entry.type" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'number' + '_' + index + '_' + field_index">Number</label>
-                </div>
-                <div class="input-field col s3">
-                  <input @click="HideChips(index,field_index)" :id="'date' + '_' + index + '_' + field_index" type="radio" value="date" class="validate" v-model = "field_entry.type" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'date' + '_' + index + '_' + field_index">Date</label>
-                </div>
-                <div class="input-field col s3">
-                  <input @click="ToggleChips(index,field_index)" :id="'other' + '_' + index + '_' + field_index" type="radio" class="validate" :name="'datatype_' + index + '_' + field_index">
-                  <label :for="'other' + '_' + index + '_' + field_index">Other</label>
-                </div>
-                
-                </div>
-                
-                <div>
-                  <v-tag-input class="hide-me" :id='"hide_me_"+index+"_"+field_index' style="display:none" placeholder="Add space-separated data types. For ex: USD EUR GPB" v-model="field_entry.type">
-                  </v-tag-input>
-                  <div class="chip right">[[field_entry.type]]</div>
-                </div>
-              
-                
-                
-                <!-- <div> {{tags}} </div> --> 
+                    <!-- Validation errors when there's more than one risk-->
+                    <p v-if="risk.errors.length" style="color: #ee6e73">
+                        <b>Please correct the following error(s):</b>
+                        <ul style="color: #ee6e73">
+                            <li v-for="error in risk.errors"> [[error]] </li>
+                        </ul>
+                    </p>
 
-                <div class="input-field col">
-                  <!-- <a @click="RemoveField(index)" class="btn-floating btn-small waves-effect waves-light red" title="Add New Field"><i class="material-icons">remove</i></a> -->
-                  
-                  <a @click="RemoveField(index,field_index)" class="waves-effect waves-light btn red right" style="margin-top: 10px"><i class="material-icons left">remove</i>Remove Field</a>
+                    <!--Remove Risk button-->
+                    <span class="right" style="cursor: pointer;" @click="RemoveRisk(index)">X</span>
 
-                </div>
-                  
-              </div>
+                    <!-- Risk numbering on the left of each form-->
+                    <span class="left numero" style="">[[index+1]]</span>
 
+                    <div class="form-content">
 
-              <div class="row">
-                <div class="col s12">
-                  <!-- <a @click="AddNewField(index)" class="btn-floating btn-large waves-effect waves-light green right" title="Add New Field"><i class="material-icons">add</i></a> -->
-                  <a @click="AddNewField(index)" class="waves-effect waves-light btn green right"><i class="material-icons left">add</i>Add Field</a>
-                </div>
+                        <!-- Input field for Risk name-->
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input required autocomplete="true" placeholder="House, car, vocal cords ...etc." id="risk_type" type="text" class="validate" v-model="risk.risk_name">
+                                <label class="active" for="risk_type">
+                                  <span style="font-size: 20px;">
+                                    <strong>Risk</strong>
+                                  </span>
+                                </label>
+                            </div>
+                        </div>
 
-              </div>
-              </div>
-            </form>
-          </div>
-          <div class="row">
-            <div class="col s10 offset-s1">
-              <div class="form-content">
-              <!-- <a @click="AddNewRisk" class="btn-floating btn-large waves-effect waves-light green right" title="Add New Risk"><i class="material-icons">add</i></a> -->
-              <a @click="AddNewRisk" class="waves-effect waves-light btn green right"><i class="material-icons left">add</i>Add Risk</a>
-              <a @click="Reset" style="margin-right: 5px;" class="waves-effect waves-light btn blue right"><i class="material-icons left">loop</i>Reset</a>
-              <br><br>
-              <button @click="Submit" class="btn btn-large waves-effect waves-light right green" type="submit" name="action">Submit!<i class="material-icons left">send</i>
-              </button>
-              </div>
+                        <!-- v-for statement to loop through input fields for risk fields-->
+                        <div class="row row-grid" v-for="(field_entry, field_index) in risk.fields">
+
+                            <!-- Risk field name-->
+                            <div class="input-field">
+                                <input required placeholder="Price, Date of Birth ...etc." id="field" type="text" class="validate" v-model="field_entry.field">
+                                <label class="active" for="field">Risk Field [[index+1]].[[field_index+1]]</label>
+                            </div>
+
+                            <!-- Risk field data type-->
+                            <div id="type">
+
+                                <!-- Input field is 'text'-->
+                                <div class="input-field col s3">
+                                    <input 
+                                      @click="HideChips(index,field_index)" 
+                                      :id="getIDOrName('text', index, field_index)" 
+                                      type="radio" 
+                                      value="text" 
+                                      class="validate" 
+                                      v-model="field_entry.type" 
+                                      :name="getIDOrName('datatype_', index, field_index)">
+
+                                    <label :for="getIDOrName('text', index, field_index)">Text</label>
+                                </div>
+
+                                <!-- Input field is 'number'-->
+                                <div class="input-field col s3">
+                                    <input 
+                                      @click="HideChips(index,field_index)" 
+                                      :id="getIDOrName('number', index, field_index)" 
+                                      type="radio" 
+                                      value="number" 
+                                      class="validate" 
+                                      v-model="field_entry.type" 
+                                      :name="getIDOrName('datatype_', index, field_index)">
+
+                                    <label :for="getIDOrName('number', index, field_index)">Number</label>
+                                </div>
+
+                                <!-- Input field is 'date'-->
+                                <div class="input-field col s3">
+                                    <input 
+                                      @click="HideChips(index,field_index)" 
+                                      :id="getIDOrName('date', index, field_index)" 
+                                      type="radio" 
+                                      value="date" 
+                                      class="validate" 
+                                      v-model="field_entry.type" 
+                                      :name="getIDOrName('datatype_', index, field_index)">
+
+                                    <label :for="getIDOrName('date', index, field_index)">Date</label>
+                                </div>
+
+                                <!-- Input field is 'enum'-->
+                                <div class="input-field col s3">
+                                    <input 
+                                      @click="ToggleChips(index,field_index)" 
+                                      :id="getIDOrName('other', index, field_index)" 
+                                      type="radio" 
+                                      class="validate" 
+                                      :name="getIDOrName('datatype_', index, field_index)">
+
+                                    <label :for="getIDOrName('other', index, field_index)">Other</label>
+                                </div>
+                            </div>
+
+                            <!-- Chips for when data type is enum-->
+                            <div>
+                                <v-tag-input 
+                                  class="hide-me" 
+                                  :id="getIDOrName('hide_me', index, field_index)" 
+                                  style="display:none" 
+                                  placeholder="Add space-separated data types. For ex: USD EUR GPB" 
+                                  v-model="field_entry.type">
+                                </v-tag-input>
+
+                                <div class="chip right">[[field_entry.type]]</div>
+                            </div>
+
+                            <!-- Remove risk field button-->
+                            <div class="input-field col">
+                                <a @click="RemoveField(index,field_index)" class="waves-effect waves-light btn red right" style="margin-top: 10px"><i class="material-icons left">remove</i>Remove Field</a>
+                            </div>
+                        </div>
+
+                        <!-- Add field button-->
+                        <div class="row">
+                            <div class="col s12">
+                                <a @click="AddNewField(index)" class="waves-effect waves-light btn green right"><i class="material-icons left">add</i>Add Field</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
             </div>
-          </div>
+
+            <div class="row">
+                <div class="col s10 offset-s1">
+                    <div class="form-content">
+
+                        <!-- Add new risk button-->
+                        <a @click="AddNewRisk" class="waves-effect waves-light btn green right">
+                          <i class="material-icons left">add</i>Add Risk
+                        </a>
+
+                        <!-- Reset button-->
+                        <a @click="Reset" style="margin-right: 5px;" class="waves-effect waves-light btn blue right">
+                          <i class="material-icons left">loop</i>Reset
+                        </a>
+
+                        <br>
+                        <br>
+
+                        <!-- Submit button sends 'risks' data element to the API-->
+                        <button @click="Submit" class="btn btn-large waves-effect waves-light right green" type="submit" name="action">
+                          Submit!<i class="material-icons left">send</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <!--End of Vue app-->
+    </div>
+    <!--End of Vue app-->
+  (% endblock %)
 
+  (% block scripts %)
 
-      <!--Import Vue.js, axios (for API calls)-->
-      <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
-      <!-- <script src="https://unpkg.com/vue@2.5.13/dist/vue.min.js"></script> -->
-      <script src="https://unpkg.com/v-tag-input@0.0.3/dist/v-tag-input.js"></script>
-      <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js" async></script>
-
-      <!--Import jQuery before materialize.js-->
-      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-      <!-- Compiled and minified JavaScript -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-
-      <script>
-      
-      var app = new Vue({
+    <!-- Vue code-->
+    <script>
+    var app = new Vue({
         el: '#app',
-        delimiters: ["[[", "]]"],
+        delimiters: ["[[", "]]"],// To work with Flask's Ninja and Vue templates at the same time
         data: {
-          errors: [],
-            risks: [
-              {
-                'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
-              }
-            ],
-          },
-          methods: {
-            AddNewRisk () {
-              this.errors=[]
-              this.risks.push({
-                risk_name: '', fields: [{'field': '', 'type': ''}], 'errors':[]
-              })
+            errors: [], // Validation errors
+
+            // 'risks' array is the meat and potatos of the app.
+            // All the data the user enters goes to this data element
+            risks: [{
+                'risk_name': '',
+                'fields': [{ 'field': '', 'type': '' }],
+                'errors': []
+            }],
+        },
+        methods: {
+
+            // Ensures HTML elements' ids and names are unique
+            getIDOrName(inputType, index, field_index) {
+              return inputType + '_' + index + '_' + field_index
+            },
+
+            // As the name suggests
+            AddNewRisk() {
+                this.errors = []
+                this.risks.push({
+                    risk_name: '',
+                    fields: [{ 'field': '', 'type': '' }],
+                    'errors': []
+                })
             },
 
             RemoveRisk(index) {
-              this.risks.splice(index,1)
-              // Vue.delete(this.risks, index);
+                this.risks.splice(index, 1)
             },
 
             AddNewField(index) {
-              this.risks[index].fields.push(
-                {'field': '', 'type': ''}
-              )
+                this.risks[index].fields.push({ 'field': '', 'type': '' })
             },
 
-            RemoveField(index,field_index) {
-              console.log(index, field_index)
-              this.risks[index].fields.splice(field_index, 1)
+            RemoveField(index, field_index) {
+                console.log(index, field_index)
+                this.risks[index].fields.splice(field_index, 1)
             },
 
             Reset() {
-              this.errors = []
-              $('.hide-me').hide()
-              $('input:radio[name="datatype"]').prop('checked', false);
-              this.risks = [
-                {
-                  'risk_name': '', 'fields': [{'field': '', 'type': ''}], 'errors':[]
-                }
-              ]
+                this.errors = []
+                $('.hide-me').hide()
+                $('input:radio[name="datatype"]').prop('checked', false);
+                this.risks = [{
+                    'risk_name': '',
+                    'fields': [{ 'field': '', 'type': '' }],
+                    'errors': []
+                }]
             },
 
+            // Checks forms are valid before submit is possible
             checkValidity() {
 
-              var canSubmit = true
-              this.errors=[]
+                var canSubmit = true
+                this.errors = []
 
-              if (this.risks.length==0) 
-                  {
+                if (this.risks.length == 0) {
                     this.errors.push('At least one risk is required ')
                     canSubmit = false
-                  }
+                }
 
 
-              for (var i =  this.risks.length - 1; i >= 0; i--) {
-                  // console.info(this.risks[i].risk_name)
-                  //Reset errors list
-                  this.risks[i].errors = []
-                  this.errors=[]
+                for (var i = this.risks.length - 1; i >= 0; i--) {
 
-                  //User friendly record number (starts from 1)
-                  var risk_display_index = i+1
+                    //Reset errors list
+                    this.risks[i].errors = []
+                    this.errors = []
 
-                  if (!this.risks[i].risk_name) 
-                  {
-                    this.risks[i].errors.push('Risk name required for record ' + risk_display_index)
-                    canSubmit = false
-                  }
+                    //User friendly record number (starts from 1)
+                    var risk_display_index = i + 1
 
-                  if (this.risks[i].fields.length==0) 
-                  {
-                    this.risks[i].errors.push('At least one field is required for record ' + risk_display_index)
-                    canSubmit = false
-                  }
+                    if (!this.risks[i].risk_name) {
+                        this.risks[i].errors.push('Risk name required for record ' + risk_display_index)
+                        canSubmit = false
+                    }
 
-                  for (var y =  this.risks[i].fields.length - 1; y >= 0; y--) {
-                    var field_display_index = y+1
-                    if (!this.risks[i].fields[y].field) 
-                      {
-                        this.risks[i].errors.push('Field name required for record ' + risk_display_index + "." + field_display_index)
-                          canSubmit = false
-                      }
+                    if (this.risks[i].fields.length == 0) {
+                        this.risks[i].errors.push('At least one field is required for record ' + risk_display_index)
+                        canSubmit = false
+                    }
 
-                    if (this.risks[i].fields[y].type.length==0) 
-                      {
-                        this.risks[i].errors.push('Data type is required for record ' + risk_display_index + "." + field_display_index)
-                          canSubmit = false
-                      }
-                  }
-              }
-              return canSubmit
+                    for (var y = this.risks[i].fields.length - 1; y >= 0; y--) {
+                        var field_display_index = y + 1
+                        if (!this.risks[i].fields[y].field) {
+                            this.risks[i].errors.push('Field name required for record ' + risk_display_index + "." + field_display_index)
+                            canSubmit = false
+                        }
+
+                        if (this.risks[i].fields[y].type.length == 0) {
+                            this.risks[i].errors.push('Data type is required for record ' + risk_display_index + "." + field_display_index)
+                            canSubmit = false
+                        }
+                    }
+                }
+                return canSubmit
             },
             Submit() {
-               if (this.checkValidity()) {
-                console.info(this.risks)
-                axios.post('risks', this.risks)
+                if (this.checkValidity()) {
 
-                .then(function(response) {
-                  // axios.get('risks')
-                  window.location.replace("form");
-                })
+                    // Submitted risks are posted to the api
+                    axios.post('risks', this.risks)
 
-                .catch(function(error) {
-                  alert('This Error occured: ' + error)
-                })
+                        .then(function(response) {
+                            // Upon submit success, user is sent to fill out his insurance policy
+                            window.location.replace("form");
+                        })
 
-              }
+
+                          // Upon submit failure, error is alerted
+                        .catch(function(error) {
+                            console.log('This Error occured: ' + error)
+                        })
+
+                }
             },
 
+
+            // These two methods ensure the enum input field (chips) only show up when necessary
             ToggleChips(index, field_index) {
-              this.risks[index].fields[field_index].type = ''
-              $("#hide_me_"+index+"_"+field_index).show()
+                this.risks[index].fields[field_index].type = ''
+                $("#hide_me_" + index + "_" + field_index).show()
             },
 
             HideChips(index, field_index) {
-              // $('#other' + '_' + index + '_' + field_index).prop('checked', false);
-              $("#hide_me_"+index+"_"+field_index).hide()
+                $("#hide_me_" + index + "_" + field_index).hide()
             }
-          },
-        })
-      </script>
-    </body>
-  </html>
+        },
+    })
+    </script>
+
+    (% endblock %)

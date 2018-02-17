@@ -1,74 +1,84 @@
-from flask import Flask, jsonify
-
+from flask import jsonify
 from sqlalchemy import Table, Column
 from sqlalchemy import Integer, String, DateTime, Numeric
 from sqlalchemy.dialects.mysql import ENUM
-# from enum import Enum
-# from sqlalchemy.types import Enum
 from sqlalchemy import create_engine
 import os
 import ast
-
-class CustomFlask(Flask):
-	""" This class is so that I can work with Flask and Vue templates together"""
-	jinja_options = Flask.jinja_options.copy()
-	jinja_options.update(dict(
-	block_start_string='(%',
-	block_end_string='%)',
-	variable_start_string='((',
-	variable_end_string='))',
-	comment_start_string='(#',
-	comment_end_string='#)',
-	))
+from sqlalchemy import MetaData
+from custom_flask import CustomFlask
 
 # Create Flask app
 app = CustomFlask(__name__)
+metadata = MetaData()
 
-def ceateTables(risks, metadata):
-	"""Takes a list of objects representing risks and fields for each risk,
-	Then it creates a representation for these tables and creates them afterwards | all the tables have a MetaData() object as foreign key,
+def ceateTables(risks):
+	"""Takes a list of objects representing risks and their fields.
+	Then it creates a representation for these tables and creates them afterwards.
+	All the tables have a MetaData() object as foreign key,
 	So that each set of tables are seperate and possibly assigned to a specific user"""
 
 	# Connect to database
 	# engine = create_engine("sqlite:///test.db", echo=True)
 	engine = create_engine('mysql+mysqldb://root:123456@localhost/britecore')
-
-	print("POSTED DATA: "+str(risks))
-
+	
 	# Loop through risks and makes a table representation/describtion for each risk
 	for risk in risks:
 		ceateTableRepresentation(risk, metadata)
 
-	# Create tables
+	# All table descriptions have 'metadata' as their foreign key. So, we simply create them all.
 	metadata.create_all(engine)
-	return "Hello"
+	return "Success!"
 
-def getTables(metadata):
+def getTables():
+	'''
+		Takes metadata object and returns all tables' names, fields, data-types associated with the it.
+	'''
+
+	# Pulls all tables' data in alphabetic order
 	tables = metadata.sorted_tables
+
+	# We'll return this array
 	all_tables_info=[]
+
+	# Loop through all tables
 	for table in tables:
+
+		# To hold each table's risk fields
 		table_fields=[]
+
+		# Loop though columns (risk fields)
 		for column in table.columns:
 			
+			# Get the data type of the risk field
 			data_type = column.type
 			if isinstance(data_type, ENUM):
 				data_type=ast.literal_eval(str(data_type)[4:].replace('(', '[').replace(')', ']'))
 			else:
 				data_type = str(data_type)
+
+			# Ignore the id column
 			if column.name == 'id':
 				pass
 			else:
+				# Push a 'dict' for each risk field
 				table_fields.append({'column_name': column.name, 'data_type': data_type})
+
+		# Push a 'dict' record for each table
 		all_tables_info.append({'table_name':table.name, 'fields':table_fields})
+
+	# Return 'Response' object with all the risks' data (from the DB) to the API
 	return jsonify(all_tables_info)
 
 
 def ceateTableRepresentation(risk, metadata):
-	table_name = risk['risk_name'].replace(' ', '-').lower()+"-table"
-	table_display_name = risk['risk_name'].title()
-	field_names = getFieldNames(risk['fields'])
-	data_types = getDataTypes(risk['fields'])
+	''' Takes a risk and returns a table describtion with metadata as foreign field'''
+	table_name = risk['risk_name'].replace(' ', '-').lower()+"-table" # This is not used. 
+	table_display_name = risk['risk_name'].title()# to be displayed to user in the next page of UX
+	field_names = getFieldNames(risk['fields'])# Fetches all fields associated with the risk
+	data_types = getDataTypes(risk['fields'])# Fetches all data-types associated with each field
 
+	# Creates Table object. No need to return as metadata has saved the object.
 	table = Table(table_display_name, metadata,
 		Column('id', Integer, primary_key=True),
 		*(Column(field_name, data_type)
@@ -79,6 +89,11 @@ def ceateTableRepresentation(risk, metadata):
 def getFieldNames(fields):
 	return [field['field'].title() for field in fields]
 
+
+# 'text' => String(50)
+# 'number' => Numeric()
+# 'date' => DateTime
+# 'other' => ENUM
 def getDataTypes(fields):
 	data_types = []
 	for field in fields:

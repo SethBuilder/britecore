@@ -1,123 +1,145 @@
 .row {
-	position: relative;
+    position: relative;
 }
 
-html, body, #app, nav {
-	padding: 0;
-	margin: 0;
+html,
+body,
+#app,
+nav {
+    padding: 0;
+    margin: 0;
 }
 
-::-moz-selection {     background-color: #cce2ff;color: rgba(0,0,0,.87); }
-::selection {     background-color: #cce2ff;color: rgba(0,0,0,.87); }
+div#app {
+    height: 100vh;
+}
+
+::-moz-selection {
+    background-color: #cce2ff;
+    color: rgba(0, 0, 0, .87);
+}
+
+::selection {
+    background-color: #cce2ff;
+    color: rgba(0, 0, 0, .87);
+}
 
 .brand-logo img {
-	width: 150px;
+    width: 150px;
 }
 
 .brand-logo p {
-	display: inline;
-	font-size: 11px;
-	vertical-align: bottom;
+    display: inline;
+    font-size: 11px;
+    vertical-align: bottom;
 }
 
 body {
-	height: 90vh;
-	/*background-color: red;*/
-	/*background: url("https://source.unsplash.com/1920x1080/?happy,people") no-repeat center center fixed;*/
-	background: url("money.webp") repeat-y center center fixed;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
+    height: 90vh;
+    /*background-color: red;*/
+    /*background: url("https://source.unsplash.com/1920x1080/?happy,people") no-repeat center center fixed;*/
+    background: url("money.webp") repeat-y center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 .lead-form {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 5px;
-  box-shadow: 0 0 .8pt .8pt grey;
-  margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    box-shadow: 0 0 .8pt .8pt grey;
+    margin-top: 30px;
 }
 
 .form-content {
-	width: 100%;
-	margin: auto;
-	padding: 20px;
+    width: 100%;
+    margin: auto;
+    padding: 20px;
 }
 
 
 
-	/* label color */
-   .input-field label {
-     color: black;
-   }
-   /* label focus color */
-   .input-field input[type=text]:focus + label {
-     color: black;
-   }
+
+/* label color */
+
+.input-field label {
+    color: black;
+}
 
 
-   ::-webkit-input-placeholder {
+/* label focus color */
+
+.input-field input[type=text]:focus+label {
+    color: black;
+}
+
+
+ ::-webkit-input-placeholder {
     color: rgba(0, 0, 0, 0.4);
-    opacity: 1 !important; /* for older chrome versions. may no longer apply. */
+    opacity: 1 !important;
+    /* for older chrome versions. may no longer apply. */
     font-size: 13px;
-	}
+}
 
-	:-moz-placeholder { /* Firefox 18- */
-	    color: rgba(0, 0, 0, 0.4);
-	    opacity: 1 !important;
-	    font-size: 13px;
-	}
+:-moz-placeholder {
+    /* Firefox 18- */
+    color: rgba(0, 0, 0, 0.4);
+    opacity: 1 !important;
+    font-size: 13px;
+}
 
-	::-moz-placeholder {  /* Firefox 19+ */
-	    color: rgba(0, 0, 0, 0.6);
-	    opacity: 1 !important;
-	    font-size: 13px;
-	}
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: rgba(0, 0, 0, 0.6);
+    opacity: 1 !important;
+    font-size: 13px;
+}
 
-	:-ms-input-placeholder {  
-	   color: rgba(0, 0, 0, 0.6);
-	   font-size: 13px;
-	}
+:-ms-input-placeholder {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+}
 
-	.row-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-	}
+.row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
 
-	#type {
-		align-self: center;
-	}
+#type {
+    align-self: center;
+}
 
-	[type="radio"]+label {
-		padding-left: 25px;
-	}
+[type="radio"]+label {
+    padding-left: 25px;
+}
 
-	.numero {
-		font-size: 100px;
-		position: absolute;
-		left: 0;
-		top: 35%;
-	}
+.numero {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 35%;
+}
 
-	.chips .input {
-	    background: none;
-	    border: 0;
-	    color: rgba(0,0,0,0.6);
-	    display: inline-block;
-	    font-size: 1rem;
-	    height: 3rem;
-	    line-height: 32px;
-	    outline: 0;
-	    margin: 0;
-	    padding: 0 !important;
-	    width: 300px !important;
-	}
+.chips .input {
+    background: none;
+    border: 0;
+    color: rgba(0, 0, 0, 0.6);
+    display: inline-block;
+    font-size: 1rem;
+    height: 3rem;
+    line-height: 32px;
+    outline: 0;
+    margin: 0;
+    padding: 0 !important;
+    width: 300px !important;
+}
 
-	@media only screen and (max-width: 1300px) {
-		.row-grid {
-			grid-template-columns: 1fr;
-		}
-		.numero {
-			font-size: 70px;
-		}
-	}
+@media only screen and (max-width: 1300px) {
+    .row-grid {
+        grid-template-columns: 1fr;
+    }
+    .numero {
+        font-size: 70px;
+    }
+}
