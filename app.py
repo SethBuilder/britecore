@@ -6,10 +6,7 @@ from sqlalchemy import create_engine
 import os
 import ast
 from sqlalchemy import MetaData
-from custom_flask import CustomFlask
 
-# Create Flask app
-app = CustomFlask(__name__)
 metadata = MetaData()
 
 def ceateTables(risks):
@@ -21,7 +18,8 @@ def ceateTables(risks):
 	# Connect to database
 	# engine = create_engine("sqlite:///test.db", echo=True)
 	engine = create_engine('mysql+mysqldb://root:123456@localhost/britecore')
-	
+
+
 	# Loop through risks and makes a table representation/describtion for each risk
 	for risk in risks:
 		ceateTableRepresentation(risk, metadata)
@@ -113,5 +111,5 @@ def getDataTypes(fields):
 			data_types.append(ENUM(*(types_list)))
 	return data_types
 
-if __name__ == '__main__:':
-	app.run(debug=True)
+# if __name__ == '__main__:':
+# 	app.run(debug=True)
