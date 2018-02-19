@@ -24,11 +24,5 @@ upfont.
 In a production environment, each user can be assigned a Metadata object that can hold all the tables of the *risks* she has chosen for her
 bespoke insurance policy.
 
-## Shortcomings/Limitations
-1. Validation is implemented in a user-friendly manner. However, if table names are not unique the error shows as a 500 alert.
-1. In order to reset the tables for each submission, there needs to be WSGI touch command which is not yet implemented. If you'd like to reset
-tables, please email me.
-2. The app is resposnive. However, it is best viewed on a computer.
-
 ## Questions
 For questions, email me at: [seif@seif.rocks](mailto:seif@seif.rocks) 
