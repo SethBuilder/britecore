@@ -20,6 +20,7 @@ Frontend:
 VueJS + Materialize.css
 
 ## Tech stack discussion
+### Backend
 Instead of using ORM, I used SQLAlchmy's Metadata which is a collection object that can hold the *description* of a set of tables as Python
 data structure. Tables can then be created and traversed in a similar manner to an XML DOM.
 
@@ -28,6 +29,11 @@ Metadata makes it possible to create and interact with the tables it holds *prog
 upfont.
 In a production environment, each user can be assigned a Metadata object that can hold all the tables of the *risks* she has chosen for her
 bespoke insurance policy.
+
+### Frontend
+For frontend I used VueJS (as required by the assignment) so that the client has the freedom of insuring as many risks as she wants with as many fields as desired. Fields are bits of data like first name, age, zip code, model, serial number...etc.
+
+I also used a bit of Materialize.css for some styling.
 
 ## Questions
 For questions, email me at: [seif@seif.rocks](mailto:seif@seif.rocks) 
