@@ -21,7 +21,7 @@ VueJS + Materialize.css
 
 ## Tech stack discussion
 ### Backend
-Instead of using ORM, I used SQLAlchmy's Metadata which is a collection object that can hold the *description* of a set of tables as Python
+Instead of using ORM, I used SQLAlchemy's Metadata which is a collection object that can hold the *description* of a set of tables as Python
 data structure. Tables can then be created and traversed in a similar manner to an XML DOM.
 
 Why?
