@@ -6,6 +6,11 @@
 ## ER Diagram
 [here.](https://docs.google.com/drawings/d/1-Jn1S1-FXbYzKDbg8uk2qdep7qzh9Z4MBR3wGt4HD4Q/edit?usp=sharing)
 
+## Intro
+The idea is to help insurance companys' clients to freely choose what to insure.
+
+For example, instead of choosing what to insure from a list, built on a regimented database, like: House, Golf Course, School building ...etc. They can set what to ensure *themselves* whether it's Automobile Policies, Cyber Liability Coverage (protection against hacking), or Prize Insurance (if someone gets a $1 million hole-in-one prize at a golf tournament, the golf course doesn't pay it, they have an insurance policy to cover them).
+
 ## Tech stack.
 
 Backend:
